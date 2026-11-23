@@ -45,6 +45,10 @@ jazzmacros.sty       all macros
 1. Create `tunes/<name>/` with `tune.tex` and `form.tex` (copy an existing tune).
 2. Add `\tuneinclude{<name>}` to `tunes.tex`.
 3. Optional: other parts, and `ireal.py` for iReal Pro charts.
+4. Optional: `tune.ly`, the tune in LilyPond (ordinary pitches, with `tonic`, `melody`
+   and `harmony`; copy `tunes/rifftide/tune.ly`), and `\tunescore` in `tune.tex`.
+   `make.sh` renders it as the **Tune** section: scale degrees with rhythm, chords as
+   Roman numerals (`lilypond/`). Requires [LilyPond](https://lilypond.org) 2.24.
 
 ## Adding a pattern
 

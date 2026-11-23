@@ -10,6 +10,19 @@ for g in tunes/*/ireal.py; do
   [ -e "$g" ] && { python3 "$g" > /dev/null || { echo "Error in $g"; exit 1; }; }
 done
 
+# Tune sections (number notation with rhythm) from tunes/*/tune.ly, with LilyPond
+if command -v lilypond > /dev/null; then
+  for l in tunes/*/tune.ly; do
+    [ -e "$l" ] || continue
+    d=$(dirname "$l")
+    lilypond -s -dno-point-and-click -dcrop -I "$PWD/$d" -I "$PWD/lilypond" \
+      -o "$d/tune-score" lilypond/score.ly || { echo "Error in $l"; exit 1; }
+    mv "$d/tune-score.cropped.pdf" "$d/tune-score.pdf"
+  done
+else
+  echo "LilyPond not found: Tune sections left out (install it, e.g. brew install lilypond)"
+fi
+
 # Guitar tabs for the pattern book
 python3 tools/tabs.py > /dev/null || { echo "Error in tools/tabs.py"; exit 1; }
 

@@ -4,6 +4,7 @@
 %% Bar 27: the lead sheet has 3 3 3 3 (degrees 10 10 10 10); the handout 10 10 10 9.
 \version "2.24.0"
 
+pickupIndent = #6  % mm, room for the pickup
 tonic = bes
 
 melody = \transpose c bes \relative c' {

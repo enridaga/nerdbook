@@ -5,6 +5,7 @@
 %% ^ = short accent (marcato), > = accent.
 \version "2.24.0"
 
+pickupIndent = #6  % mm, room for the pickup
 tonic = f
 
 melody = \relative c' {

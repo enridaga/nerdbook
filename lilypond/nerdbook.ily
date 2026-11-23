@@ -79,15 +79,26 @@ degrees =
          (dim (and minor (has 6) (not (has 7))))
          (num (vector-ref roman-up (- deg 1)))
          (num (if minor (string-downcase num) num))
+         (seventh (or (has 10) (has 11)))
+         ;; natural extension shown instead of 7: 9, 13
+         (ext (cond ((and seventh (has 9) (not dim)) "13")
+                    ((and seventh (has 2)) "9")
+                    (else "7")))
+         ;; altered tensions
+         (alts (string-append
+                 (if (has 1) "♭9" "")
+                 (if (and (has 3) (has 4)) "♯9" "")
+                 (if (and (has 6) (has 7)) "♯11" "")
+                 (if (and (has 8) (has 7) seventh) "♭13" "")))
          (sup (cond ((and dim (has 9)) "°7")
                     ((and dim (has 10)) "ø7")
                     (dim "°")
-                    ((and minor (has 10)) "–7")
-                    ((and minor (has 11)) "–Δ7")
+                    ((and minor (has 10)) (string-append "–" ext alts))
+                    ((and minor (has 11)) (string-append "–Δ" ext alts))
                     (minor "–")
-                    ((has 11) "Δ7")
-                    ((has 10) "7")
-                    (else ""))))
+                    ((has 11) (string-append "Δ" ext alts))
+                    ((has 10) (string-append ext alts))
+                    (else alts))))
     (markup #:concat ((nb-acc-markup alt) #:bold num #:super sup))))
 
 nbChords = \with {
@@ -122,6 +133,10 @@ nbDegreeStaff = \with {
 %% grey chord for alternative changes: \\alt d2:7
 alt = { \once \override ChordName.color = #(x11-color 'grey55) }
 
+%% Indent (mm) of lines 2.. so that bar 1 aligns with the bars below when line 1
+%% starts with a pickup. A tune with a pickup sets e.g.  pickupIndent = #6  in tune.ly
+pickupIndent = #0
+
 %% section label: \section "A"
 section = #(define-music-function (s) (string?)
   #{ \mark \markup \box \bold #s #})
@@ -140,3 +155,8 @@ hiddenBars = #(define-music-function (n next) (index? index?)
      } #})
 hiddenChords = #(define-music-function (n) (index?)
   #{ \tag #'print { \repeat unfold #n s1 } #})
+
+%% coda: \toCoda "last time" on the bar where to jump; \coda as the section label
+toCoda = #(define-music-function (txt) (string?)
+  #{ \mark \markup \concat { \musicglyph "scripts.coda" " " \italic #txt } #})
+coda = { \mark \markup \musicglyph "scripts.coda" }

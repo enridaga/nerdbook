@@ -13,7 +13,7 @@
   % bar lines of 4-bar lines align. short-indent leaves room on lines 2.. for the
   % width the pickup takes on line 1. Shorter lines are padded with \hiddenBars.
   indent = 0
-  short-indent = 0.6\cm
+  short-indent = \pickupIndent
   ragged-right = ##f
   ragged-last = ##f
   system-system-spacing.basic-distance = #17

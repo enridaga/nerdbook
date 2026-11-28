@@ -109,7 +109,13 @@ h1{{font:700 clamp(3rem,9vw,5.6rem)/1 system-ui,"Helvetica Neue",sans-serif;colo
 .wheel .iivi{{fill:#a87420;font:700 11px system-ui,sans-serif;text-anchor:middle}}
 h2{{font:700 .85rem system-ui,sans-serif;letter-spacing:.25em;text-transform:uppercase;color:var(--violet);
   border-bottom:2px solid var(--gold);display:inline-block;padding-bottom:.2rem;margin:2rem 0 1rem}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:1rem}}
+.tunelist{{list-style:none;padding:0;margin:0;max-width:42rem}}
+.tunelist li{{padding:.45rem 0;border-bottom:1px solid #e6dfea}}
+.tunelist a{{color:var(--violet);font-size:1.12rem;text-decoration:none;font-weight:600}} .tunelist a:hover{{text-decoration:underline}}
+.tunelist .meta{{display:inline;margin-left:.5rem;font-size:.9rem}}
+.back{{font:500 .9rem system-ui,sans-serif;color:var(--violet);text-decoration:none}}
+.tunehead h1{{font-size:clamp(2.2rem,6vw,3.6rem);margin-top:.8rem}}
+.ireal li{{margin:.4rem 0}} .ireal a{{color:var(--violet);font-weight:600}} .ireal .desc{{display:block;color:#6a6270;font-size:.88rem}}
 .card{{background:#fff;border:1px solid #e6dfea;border-left:4px solid var(--violet);border-radius:8px;padding:.9rem 1.1rem}}
 .card h3{{margin:0;font-size:1.25rem}} .meta{{font-style:italic;color:#6a6270;margin:.15rem 0 .5rem;font-size:.92rem}}
 .facts{{font-size:.9rem;margin:.2rem 0}} .facts b{{font-family:system-ui,sans-serif;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:#7b6a86}}
@@ -136,7 +142,7 @@ please <a href="https://github.com/enridaga/nerdbook/issues">open an issue on Gi
 {wheel}
 </header>
 <h2>Tunes</h2>
-<div class="grid">{cards}</div>
+<ul class="tunelist">{cards}</ul>
 <h2>Credits</h2>
 <div class="credits">{credits}</div>
 <footer>Nerdbook © 2026 the Nerdbook contributors · {version}<br>
@@ -146,9 +152,36 @@ The songs belong to their composers, lyricists and publishers. Made with the hel
 </main>
 </body></html>"""
 
+VERSION = ""
+
+def tune_page(name, title, authors, year, keys, form, has_pdf, ireal):
+    """One HTML page per tune: details, PDF and iReal Pro files."""
+    style = PAGE[PAGE.index("<style>"):PAGE.index("</style>") + 8].replace("{{", "{").replace("}}", "}")
+    btn = (f'<a class="btn primary" href="../songs/{urllib.parse.quote(name)}.pdf">PDF</a>'
+           if has_pdf else "")
+    items = "".join(f'<li>{link("../ireal/" + fn, label)}<span class="desc">{desc}</span></li>'
+                    for fn, label, desc in ireal)
+    ir = f'<h2>iReal Pro</h2><p>Open on a device with iReal Pro and tap the link.</p><ul class="ireal">{items}</ul>' if ireal else ""
+    return f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} — Nerdbook</title>
+{style}</head><body>
+<div class="band">NUMBER NOTATION · JAZZ STUDY</div>
+<main>
+<p><a class="back" href="../index.html">← Nerdbook</a></p>
+<div class="tunehead"><h1>{title}</h1>
+<p class="sub">{authors} · {year}</p></div>
+<p class="facts"><b>Key</b> {keys}</p><p class="facts"><b>Form</b> {form}</p>
+<div class="books">{btn}</div>
+{ir}
+<footer>Nerdbook © 2026 the Nerdbook contributors · {html.escape(VERSION)} ·
+<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a> ·
+work in progress: <a href="https://github.com/enridaga/nerdbook/issues">report an error</a></footer>
+</main></body></html>"""
+
 def main():
     if os.path.isdir(SITE): shutil.rmtree(SITE)
-    os.makedirs(os.path.join(SITE, "songs")); os.makedirs(os.path.join(SITE, "ireal"))
+    for d in ("songs", "ireal", "tunes"): os.makedirs(os.path.join(SITE, d))
     books = [("main.pdf", "Nerdbook.pdf", "Study book (PDF)"),
              ("forms.pdf", "Nerdbook - Forms.pdf", "Forms"),
              ("patternbook.pdf", "Nerdbook - Pattern Book.pdf", "Pattern book")]
@@ -161,32 +194,31 @@ def main():
     for f in os.listdir(os.path.join(ROOT, "ireal")):
         shutil.copy(os.path.join(ROOT, "ireal", f), os.path.join(SITE, "ireal", f))
 
-    tunes = re.findall(r"^\\tuneinclude\{([^}]+)\}", open(os.path.join(ROOT, "tunes.tex")).read(), re.M)
-    cards = []
-    for name in tunes:
-        tex = open(os.path.join(ROOT, "tunes", name, "tune.tex")).read()
-        title, authors, year, keys, form = map(tex2html, args(tex, tex.index(r"\tune{") + 5, 5))
-        links = []
-        pdf = os.path.join(ROOT, "songs", name + ".pdf")
-        if os.path.exists(pdf):
-            shutil.copy(pdf, os.path.join(SITE, "songs", name + ".pdf"))
-            links.append(f'<a class="pdf" href="songs/{urllib.parse.quote(name)}.pdf">PDF</a>')
-        irf = os.path.join(ROOT, "tunes", name, "ireal-files.tex")
-        if os.path.exists(irf):
-            for fn, desc in re.findall(r"\\irealfile\{(.*?)\}\{(.*?)\}\n", open(irf).read()):
-                fn = fn.replace(r"\&", "&")
-                label = "iReal: " + fn.split(" - ", 1)[-1].removesuffix(".html")
-                links.append(f'<span title="{html.escape(desc)}">{link("ireal/" + fn, label)}</span>')
-        cards.append(f"""<article class="card"><h3>{title}</h3>
-<p class="meta">{authors} · {year}</p>
-<p class="facts"><b>Key</b> {keys}</p><p class="facts"><b>Form</b> {form}</p>
-<p class="links">{" ".join(links[:1])} {" · ".join(links[1:])}</p></article>""")
-
     version = ""
     vt = os.path.join(ROOT, "version.tex")
     if os.path.exists(vt):
         v = re.findall(r"\{([^{}]*)\}\n", open(vt).read())
         version = f"Version {v[0]} · {v[1]}" if len(v) >= 2 else ""
+    global VERSION; VERSION = version
+    tunes = re.findall(r"^\\tuneinclude\{([^}]+)\}", open(os.path.join(ROOT, "tunes.tex")).read(), re.M)
+    cards = []
+    for name in tunes:
+        tex = open(os.path.join(ROOT, "tunes", name, "tune.tex")).read()
+        title, authors, year, keys, form = map(tex2html, args(tex, tex.index(r"\tune{") + 5, 5))
+        pdf = os.path.join(ROOT, "songs", name + ".pdf")
+        if os.path.exists(pdf):
+            shutil.copy(pdf, os.path.join(SITE, "songs", name + ".pdf"))
+        ireal = []
+        irf = os.path.join(ROOT, "tunes", name, "ireal-files.tex")
+        if os.path.exists(irf):
+            for fn, desc in re.findall(r"\\irealfile\{(.*?)\}\{(.*?)\}\n", open(irf).read()):
+                fn = fn.replace(r"\&", "&")
+                ireal.append((fn, fn.split(" - ", 1)[-1].removesuffix(".html"), tex2html(desc)))
+        cards.append(f'<li><a href="tunes/{urllib.parse.quote(name)}.html">{title}</a>'
+                     f'<p class="meta">{authors} · {year}</p></li>')
+        open(os.path.join(SITE, "tunes", name + ".html"), "w").write(tune_page(
+            name, title, authors, year, keys, form, os.path.exists(pdf), ireal))
+
     page = PAGE.format(books="".join(rows), wheel=wheel_svg(), cards="".join(cards), credits=credits_html(), version=html.escape(version))
     open(os.path.join(SITE, "index.html"), "w").write(page)
     open(os.path.join(SITE, ".nojekyll"), "w").close()

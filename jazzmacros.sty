@@ -43,7 +43,13 @@
 % \tune{Title}{Authors}{First published}{Keys}{Form}
 \newcommand{\tune}[5]{\chapter{#1}\renewcommand{\tunekeys}{#4}\setcounter{exercise}{0}%
   \noindent{\itshape #2 \textperiodcentered\ #3}\par\smallskip
-  \noindent\textbf{Keys:} #4 \quad \textbf{Form:} #5\par\medskip}
+  \noindent\textbf{Keys:} #4 \quad \textbf{Form:} #5\tunenotationnote\par\medskip}
+% Footnote on the notation, used in the single-tune PDFs (song.tex), which have no legend
+\newcommand{\tunenotationnote}{}
+\newcommand{\notationfootnote}{\renewcommand{\tunenotationnote}{\footnote{Number notation:
+  melody as scale degrees and chords as Roman numerals, relative to the key. The symbols
+  are explained in the Notation chapter of the full Nerdbook,
+  \url{https://github.com/enridaga/nerdbook}.}}}
 
 % Tune folders: tunes/<name>/tune.tex includes its parts with \tunepart{file}
 \newif\ifformsonly   % \formsonlytrue in forms.tex: print only the forms

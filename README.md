@@ -16,7 +16,7 @@ Requires `pdflatex` (TeX Live) and Python 3. Produces:
 | `main.pdf` | full book: notation legend + all tunes |
 | `forms.pdf` | forms only |
 | `patternbook.pdf` | all patterns, with guitar tabs |
-| `songs/<tune>.pdf` | one stand-alone PDF per tune, with tabs and legend |
+| `songs/<tune>.pdf` | one stand-alone PDF per tune, with tabs (the notation is in a footnote; the legend is in `main.pdf`) |
 | `ireal/*.html` | iReal Pro charts and playlists (open on a device, tap the link) |
 | `site/` | static website linking all of the above (GitHub Pages) |
 

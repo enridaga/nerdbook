@@ -98,6 +98,7 @@ h1{{font:700 clamp(3rem,9vw,5.6rem)/1 system-ui,"Helvetica Neue",sans-serif;colo
   text-decoration:none;font:600 .9rem system-ui,sans-serif}}
 .btn.primary{{background:var(--violet);color:#fff}}
 .btn:hover{{background:var(--gold);border-color:var(--gold);color:#fff}}
+.wip{{margin-top:1.4rem;padding:.7rem 1rem;border-left:4px solid var(--gold);background:#fbf1de;font-size:.92rem;max-width:32rem}} .wip a{{color:var(--violet)}}
 .wheel{{width:100%;height:auto}}
 .wheel .ring{{fill:none;stroke:#e3dae8;stroke-width:1.5}} .wheel .ring2{{fill:none;stroke:#eee6f0;stroke-width:1}}
 .wheel circle.dia{{fill:var(--paper);stroke:var(--violet);stroke-width:2}} .wheel circle.chr{{fill:var(--paper);stroke:#cfc8d3}}
@@ -127,6 +128,9 @@ footer{{color:#8a8290;font-size:.85rem;margin-top:3rem}} footer a,.credits a{{co
 <p class="lead">Every tune is written relative to its key: the melody as scale degrees, the chords as
 Roman numerals. Learn the shape once, play it in any key.</p>
 <div class="books">{books}</div>
+<p class="wip"><b>Work in progress.</b> Nerdbook is not a finished product: it is being written,
+and it may contain errors in the transcriptions, the harmony or the notes. If you find one,
+please <a href="https://github.com/enridaga/nerdbook/issues">open an issue on GitHub</a>.</p>
 </div>
 <svg width="0" height="0" style="position:absolute"><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#cc9433"/></marker></defs></svg>
 {wheel}

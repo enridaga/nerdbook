@@ -200,14 +200,21 @@
       at ([xshift=3.1cm,yshift=2.6cm]current page.south west) {The Nerdbook contributors};
     \node[anchor=south west,text=black!50,font=\footnotesize]
       at ([xshift=3.1cm,yshift=2cm]current page.south west)
-      {v\docversion\ \textperiodcentered\ \docdate};
+      {v\docversion\ \textperiodcentered\ \docdate\ \textperiodcentered\ \textit{work in progress}};
   \end{tikzpicture}
   \end{titlepage}
   \nerdlicense}
 
 % Licence page (back of the cover)
 \newcommand{\nerdlicense}{%
-  \thispagestyle{empty}\null\vfill
+  \thispagestyle{empty}
+  \begin{tcolorbox}[colback=nbgold!8,colframe=nbgold!80!black,fonttitle=\bfseries,
+    title={Work in progress}]
+  Nerdbook is not a finished product: it is being written, and it may contain errors
+  in the transcriptions, the harmony or the notes. If you find an error, please open
+  an issue on GitHub: \url{https://github.com/enridaga/nerdbook/issues}.
+  \end{tcolorbox}
+  \null\vfill
   {\small\raggedright
   \textbf{Nerdbook} \textperiodcentered\ A jazz study book in number notation\\
   Copyright \copyright\ 2026 the Nerdbook contributors \textperiodcentered\

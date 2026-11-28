@@ -12,7 +12,7 @@ melody = \relative c' {
   \repeat volta 2 {
     \section "A"
     f2.. d8 | e8 e4.~ e2~ | e4 r8 d e4. f8 | a1~ | \break
-    a4 r8 d, e4. f8 | a1~ | a4 r8 g a4. bes8 | e2.. d8 | \break
+    a4 r8 d, e4. f8 | a1~ | a4 r8 g a4. bes8 | d2.. d8 | \break
     e2.. d8 | c8 c4.~ c4. bes8 | a4. g8 a4. g8 | a2.. g8 | \break
   }
   \alternative {
